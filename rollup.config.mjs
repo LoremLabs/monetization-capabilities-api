@@ -42,4 +42,7 @@ function getConfig(input, name) {
 	return configs;
 }
 
-export default [getConfig("src/index.ts", "Monetization")].flat();
+export default [
+	getConfig("src/index.ts", "Monetization"),
+	getConfig("src/plugins/webmonetization.ts", "PluginWebMonetization"),
+].flat();
