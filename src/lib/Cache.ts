@@ -1,38 +1,55 @@
 export default class Cache {
 	#enabled: boolean;
-	#keys = new Set<string>();
+	#keys: Set<string>;
+	#baseKey = "__monetization__";
 
 	constructor({ enabled = true }) {
 		this.#enabled = enabled;
+		this.#keys = new Set<string>(this.#getKeys());
 	}
 
 	async get(key: string) {
 		if (!this.#canStore()) return;
-		const val = localStorage.getItem(this.#key(key));
+		const val = localStorage.getItem(this.#getKey(key));
 		return val ? JSON.parse(val).value : undefined;
 	}
 
 	async set(key: string, value: unknown) {
 		if (!this.#canStore()) return;
-		this.#keys.add(this.#key(key));
-		localStorage.setItem(this.#key(key), JSON.stringify({ value }));
+		this.#keys.add(key);
+		this.#saveKeys();
+		localStorage.setItem(this.#getKey(key), JSON.stringify({ value }));
 	}
 
 	async delete(key: string) {
 		if (!this.#canStore()) return;
-		this.#keys.delete(this.#key(key));
-		localStorage.removeItem(this.#key(key));
+		this.#keys.delete(key);
+		this.#saveKeys();
+		localStorage.removeItem(this.#getKey(key));
 	}
 
 	async clear() {
 		await Promise.all([...this.#keys].map(key => this.delete(key)));
+		this.#keys.clear();
+		this.#saveKeys();
 	}
 
 	#canStore() {
 		return this.#enabled && globalThis.localStorage;
 	}
 
-	#key(key: string) {
+	#getKey(key: string) {
 		return `monetization/${key}`;
+	}
+
+	#saveKeys() {
+		if (!this.#canStore()) return false;
+		localStorage.setItem(this.#baseKey, JSON.stringify([...this.#keys]));
+		return true;
+	}
+
+	#getKeys(): string[] {
+		if (!this.#canStore()) return [];
+		return JSON.parse(localStorage.getItem(this.#baseKey) || "[]");
 	}
 }
