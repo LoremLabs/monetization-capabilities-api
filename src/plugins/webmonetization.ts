@@ -8,10 +8,17 @@ function isCapable(timeout: number) {
 	return new Promise<Result>(resolve => {
 		const wm = (document as MonetizationExtendedDocument).monetization;
 		if (!wm) {
-			return resolve({ isSupported: false });
+			return resolve({
+				isSupported: false,
+				details: { message: "No document.monetization" },
+			});
 		}
+
 		const timerId = setTimeout(() => {
-			resolve({ isSupported: false });
+			resolve({
+				isSupported: false,
+				details: { message: "Timeout" },
+			});
 			wm.removeEventListener("monetizationprogress", onProgress);
 		}, timeout);
 		wm.addEventListener("monetizationprogress", onProgress);
