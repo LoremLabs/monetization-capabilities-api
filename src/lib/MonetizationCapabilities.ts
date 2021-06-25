@@ -42,7 +42,7 @@ class Capabilities extends Lock {
 		this.define(name, test);
 	}
 
-	keys() {
+	list() {
 		return [...this.#capabilities.keys()];
 	}
 
@@ -69,7 +69,7 @@ export default class MonetizationCapabilities {
 	}
 
 	list() {
-		return this.#capabilities.keys();
+		return this.#capabilities.list();
 	}
 
 	has(capability: Capability) {
