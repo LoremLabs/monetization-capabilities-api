@@ -16,7 +16,7 @@ export default class Monetization {
 	#cache: Cache;
 	#capabilities = new Map<Capability, () => ReturnType<Test>>();
 
-	constructor({ useCache = false }: Options) {
+	constructor({ useCache = false }: Options = {}) {
 		this.#cache = new Cache({ enabled: useCache });
 	}
 
