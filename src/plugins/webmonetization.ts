@@ -1,6 +1,6 @@
 /// <reference types="@webmonetization/types" />
 import { MonetizationExtendedDocument } from "@webmonetization/types";
-import { Capability, Result, Plugin } from "../index.js";
+import { Capability, Result, Plugin } from "../lib/MonetizationCapabilities.js";
 
 const name: Capability = "webmonetization/*";
 

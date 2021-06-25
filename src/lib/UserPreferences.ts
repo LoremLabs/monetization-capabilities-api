@@ -1,4 +1,4 @@
-import { Capability } from "../index.js";
+import { Capability } from "./MonetizationCapabilities.js";
 
 export default class UserPreferences {
 	#prefer = new Set<Capability>();
