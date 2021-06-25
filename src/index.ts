@@ -1,4 +1,5 @@
 import Cache from "./lib/Cache.js";
+import UserPreferences from "./lib/UserPreferences.js";
 
 export type Capability = `${string}/${string}`;
 export type Result = { isSupported: boolean; details?: unknown };
@@ -10,10 +11,7 @@ interface Options {
 }
 
 export default class Monetization {
-	static UserPreferences = Object.freeze({
-		allow: new Set<Capability>(),
-		deny: new Set<Capability>(),
-	});
+	static UserPreferences = new UserPreferences();
 
 	#cache: Cache;
 	#capabilities = new Map<Capability, () => ReturnType<Test>>();
@@ -44,7 +42,7 @@ export default class Monetization {
 	async match(): Promise<Capability[]> {
 		const userPreferences = Monetization.UserPreferences;
 		const sitePreferences = [...this.#capabilities.keys()];
-		return [...userPreferences.allow]; // TODO
+		return [...userPreferences.get().prefers]; // TODO
 	}
 
 	async clearCache() {
