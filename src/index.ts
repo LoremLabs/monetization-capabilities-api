@@ -49,7 +49,7 @@ export default class Monetization {
 		await this.#cache.clear();
 	}
 
-	async #get(capability: Capability, { bypassCache = false } = {}) {
+	async get(capability: Capability, { bypassCache = false } = {}) {
 		if (!this.#capabilities.has(capability)) {
 			throw new Error(`Unrecognized capability: ${capability}`);
 		}

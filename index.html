@@ -1,0 +1,18 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="monetization" content="$respec.org" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script type="module">
+			import Monetization from "./build/index.js";
+			import webMonetization from "./build/plugins/webmonetization.js";
+			const monetization = new Monetization();
+			monetization.use(webMonetization(4_000));
+
+			monetization.get("webmonetization/*").then(console.log);
+		</script>
+	</body>
+</html>
