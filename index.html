@@ -6,13 +6,17 @@
 		<title>Document</title>
 	</head>
 	<body>
+		<!-- Adds window.monetization -->
+		<script src="./build/index.js" type="module"></script>
 		<script type="module">
-			import Monetization from "./build/index.js";
 			import webMonetization from "./build/plugins/webmonetization.js";
-			const monetization = new Monetization();
-			monetization.use(webMonetization(4_000));
 
-			monetization.get("webmonetization/*").then(console.log);
+			const capabilities = window.monetization.capabilities.acquire();
+			capabilities.use(webMonetization(3000));
+
+			(async () => {
+				console.log(await window.monetization.get("webmonetization/*"));
+			})();
 		</script>
 	</body>
 </html>
