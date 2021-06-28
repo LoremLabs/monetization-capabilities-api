@@ -1,21 +1,19 @@
 import { Capability } from "./MonetizationCapabilities.js";
 
 export default class UserPreferences {
-	#prefer = new Set<Capability>();
+	#allow = new Set<Capability>();
 	#deny = new Set<Capability>();
-
-	setPreferences(capabilities: Capability[]) {
-		this.#prefer = new Set(capabilities.filter(isValidCapability));
-	}
 
 	allow(capability: Capability) {
 		ensureValidCapability(capability);
+		this.#allow.add(capability);
 		this.#deny.delete(capability);
 	}
 
 	deny(capability: Capability) {
 		ensureValidCapability(capability);
 		this.#deny.add(capability);
+		this.#allow.delete(capability);
 	}
 
 	/**
@@ -53,7 +51,7 @@ export default class UserPreferences {
 	}
 
 	get() {
-		return { prefers: [...this.#prefer], denies: [...this.#deny] };
+		return { allows: [...this.#allow], denies: [...this.#deny] };
 	}
 }
 

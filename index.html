@@ -14,18 +14,20 @@
 			const capabilities = window.monetization.capabilities.acquire();
 			capabilities.use(webMonetization(3000));
 			capabilities.define("ads/*", () => {});
-			capabilities.define("ads/foo", () => {});
+			capabilities.define("ads/behavioral", () => {});
 
-			monetization.userPreferences.setPreferences([
-				"foo/bar",
-				"foo/*",
-				"webmonetization/*",
-			]);
 			monetization.userPreferences.deny("ads/*");
+			monetization.userPreferences.allow("ads/behavioral");
+			monetization.userPreferences.allow("foo/*");
+			monetization.userPreferences.allow("webmonetization/*");
 
-			console.log("cap", monetization.capabilities.list());
+			console.group("siteCapabilities");
+			console.log(monetization.capabilities.list());
+			console.groupEnd();
+			console.group("userPreferences");
 			console.dir(monetization.userPreferences.get());
-			console.log(monetization.match());
+			console.groupEnd();
+			console.log("Matches:", monetization.match());
 
 			// (async () => {
 			// 	console.log(await window.monetization.get("webmonetization/*"));
