@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="monetization" content="$respec.org" />
+		<!-- <meta name="monetization" content="$respec.org" /> -->
 		<title>Document</title>
 	</head>
 	<body>
@@ -13,10 +13,23 @@
 
 			const capabilities = window.monetization.capabilities.acquire();
 			capabilities.use(webMonetization(3000));
+			capabilities.define("ads/*", () => {});
+			capabilities.define("ads/foo", () => {});
 
-			(async () => {
-				console.log(await window.monetization.get("webmonetization/*"));
-			})();
+			monetization.userPreferences.setPreferences([
+				"foo/bar",
+				"foo/*",
+				"webmonetization/*",
+			]);
+			monetization.userPreferences.deny("ads/*");
+
+			console.log("cap", monetization.capabilities.list());
+			console.dir(monetization.userPreferences.get());
+			console.log(monetization.match());
+
+			// (async () => {
+			// 	console.log(await window.monetization.get("webmonetization/*"));
+			// })();
 		</script>
 	</body>
 </html>
