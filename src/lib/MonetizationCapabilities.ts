@@ -80,23 +80,18 @@ export default class MonetizationCapabilities {
 		if (!this.#capabilities.has(capability)) {
 			throw new Error(`Unrecognized capability: ${capability}`);
 		}
+		const detectCapability = this.#capabilities.get(capability)!;
 
-		if (!bypassCache) {
-			const cached = await this.#cache.get(capability);
-			if (cached) {
-				return cached;
-			}
+		if (bypassCache) {
+			return await detectCapability();
 		}
 
-		const result = await this.#capabilities.get(capability)!();
-		if (!bypassCache) {
-			try {
-				await this.#cache.set(capability, result);
-			} catch (error) {
-				console.error("Failed to cache result", error);
-			}
+		const cached = await this.#cache.get(capability);
+		if (cached) {
+			return cached;
 		}
-
+		const result = await detectCapability();
+		await this.#cache.set(capability, result);
 		return result;
 	}
 
