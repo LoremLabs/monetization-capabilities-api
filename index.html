@@ -16,8 +16,8 @@
 			capabilities.define("ads/*", () => {});
 			capabilities.define("ads/behavioral", () => {});
 
-			monetization.userPreferences.deny("ads/*");
-			monetization.userPreferences.allow("ads/behavioral");
+			monetization.userPreferences.deny("ads/behavioral");
+			monetization.userPreferences.allow("ads/*");
 			monetization.userPreferences.allow("foo/*");
 			monetization.userPreferences.allow("webmonetization/*");
 

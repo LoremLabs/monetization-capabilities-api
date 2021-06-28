@@ -47,7 +47,10 @@ export default class UserPreferences {
 	}
 
 	denies(capability: Capability) {
-		return [...this.#deny].some(cap => this.matches(cap, capability));
+		return (
+			[...this.#deny].some(cap => this.matches(cap, capability)) &&
+			!this.#allow.has(capability)
+		);
 	}
 
 	get() {
