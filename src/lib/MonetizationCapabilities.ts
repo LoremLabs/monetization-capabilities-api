@@ -5,6 +5,10 @@ export type Result = { isSupported: boolean; details?: unknown };
 export type Test = () => Promise<Result>;
 export type Plugin = [name: Capability, test: Test];
 
+export interface DetectOptions {
+	bypassCache?: boolean;
+}
+
 class Lock {
 	#locked = false;
 
@@ -60,7 +64,7 @@ export default class MonetizationCapabilities {
 	#cache: Cache;
 
 	constructor() {
-		this.#cache = new Cache({ enabled: true });
+		this.#cache = new Cache({ enabled: false });
 	}
 
 	acquire() {
@@ -76,7 +80,8 @@ export default class MonetizationCapabilities {
 		return this.#capabilities.has(capability);
 	}
 
-	async get(capability: Capability, { bypassCache = false } = {}) {
+	async detect(capability: Capability, options: DetectOptions) {
+		const { bypassCache = false } = options;
 		if (!this.#capabilities.has(capability)) {
 			throw new Error(`Unrecognized capability: ${capability}`);
 		}
@@ -86,7 +91,7 @@ export default class MonetizationCapabilities {
 			return await detectCapability();
 		}
 
-		const cached = await this.#cache.get(capability);
+		const cached: Result = await this.#cache.get(capability);
 		if (cached) {
 			return cached;
 		}

@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- <meta name="monetization" content="$respec.org" /> -->
+		<meta name="monetization" content="$respec.org" />
 		<title>Document</title>
 	</head>
 	<body>
@@ -12,7 +12,7 @@
 			import webMonetization from "./build/plugins/webmonetization.js";
 
 			const capabilities = window.monetization.capabilities.acquire();
-			capabilities.use(webMonetization(3000));
+			capabilities.use(webMonetization(5000));
 			capabilities.define("ads/*", () => {});
 			capabilities.define("ads/behavioral", () => {});
 
@@ -21,16 +21,20 @@
 			monetization.userPreferences.allow("foo/*");
 			monetization.userPreferences.allow("webmonetization/*");
 
-			console.group("siteCapabilities");
+			console.group("monetization.capabilities.list()");
 			console.log(monetization.capabilities.list());
 			console.groupEnd();
-			console.group("userPreferences");
+			console.group("monetization.userPreferences.get()");
 			console.dir(monetization.userPreferences.get());
 			console.groupEnd();
-			console.log("Matches:", monetization.match());
+			monetization.match().then(matches => {
+				console.group("monetization.match()");
+				console.table(matches);
+				console.groupEnd();
+			});
 
 			// (async () => {
-			// 	console.log(await window.monetization.get("webmonetization/*"));
+			// 	console.log(await window.monetization.detect("webmonetization/*"));
 			// })();
 		</script>
 	</body>

@@ -1,6 +1,6 @@
 import UserPreferences from "./UserPreferences.js";
 import MonetizationCapabilities from "./MonetizationCapabilities.js";
-import type { Capability } from "./MonetizationCapabilities.js";
+import type { Capability, DetectOptions } from "./MonetizationCapabilities.js";
 
 export default class Monetization {
 	#userPreferences = new UserPreferences();
@@ -18,7 +18,31 @@ export default class Monetization {
 	 * Find matches between user preferences, user's capabilities and the
 	 * capabilities defined by site (i.e., site preferences).
 	 */
-	match(): Capability[] {
+	async match(
+		options: DetectOptions = {},
+	): Promise<{ capability: Capability; details?: unknown }[]> {
+		const capabilities = this.getUserAcceptableCapabilites();
+		const detectedCapabilities = await Promise.all(
+			capabilities.map(async capability => {
+				try {
+					const result = await this.detect(capability, options);
+					if (result?.isSupported) {
+						return result;
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			}),
+		);
+		return detectedCapabilities
+			.filter(<T>(res: T | null | undefined): res is T => !!res)
+			.map((res, i) => ({
+				capability: capabilities[i],
+				details: res.details,
+			}));
+	}
+
+	getUserAcceptableCapabilites() {
 		const siteCapabilities = this.#capabilities.list();
 		return siteCapabilities.filter(cap => !this.#userPreferences.denies(cap));
 	}
@@ -27,7 +51,7 @@ export default class Monetization {
 		return this.#capabilities.clearCache();
 	}
 
-	get(capability: Capability, { bypassCache = false } = {}) {
+	detect(capability: Capability, options: DetectOptions = {}) {
 		if (!capability) {
 			throw new TypeError(
 				`Failed to execute 'get' on 'Monetization': 1 argument required, but only 0 present.`,
@@ -37,6 +61,6 @@ export default class Monetization {
 			throw new Error(`Unrecognized capability: ${capability}`);
 		}
 
-		return this.#capabilities.get(capability, { bypassCache });
+		return this.#capabilities.detect(capability, options);
 	}
 }
