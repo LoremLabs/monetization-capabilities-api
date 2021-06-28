@@ -16,7 +16,8 @@ export default class Monetization {
 	}
 
 	/**
-	 * Find matches between user preferences, user's capabilities and the
+	 * Find matches between user preferences (one that user says they can
+	 * support), user's capabilities (one that user actually supports) and the
 	 * capabilities defined by site (i.e., site preferences).
 	 */
 	async match(
@@ -42,6 +43,9 @@ export default class Monetization {
 		}
 	}
 
+	/**
+	 * Find matches between user preferences, and site preferences.
+	 */
 	getUserAcceptableCapabilites() {
 		const siteCapabilities = this.#capabilities.list();
 		return siteCapabilities.filter(cap => !this.#userPreferences.denies(cap));
@@ -51,10 +55,13 @@ export default class Monetization {
 		return this.#capabilities.clearCache();
 	}
 
+	/**
+	 * Check whether the user supports given capability.
+	 */
 	detect(capability: Capability, options: DetectOptions = {}) {
 		if (!capability) {
 			throw new TypeError(
-				`Failed to execute 'get' on 'Monetization': 1 argument required, but only 0 present.`,
+				`Failed to execute 'detect' on 'Monetization': first argument 'capability' is required.`,
 			);
 		}
 		if (!this.#capabilities.has(capability)) {
