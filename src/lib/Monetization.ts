@@ -1,5 +1,6 @@
 import UserPreferences from "./UserPreferences.js";
 import MonetizationCapabilities from "./MonetizationCapabilities.js";
+import type { Result } from "./MonetizationCapabilities.js";
 import type { Capability, DetectOptions } from "./MonetizationCapabilities.js";
 
 export default class Monetization {
@@ -23,23 +24,22 @@ export default class Monetization {
 	): Promise<{ capability: Capability; details?: unknown }[]> {
 		const capabilities = this.getUserAcceptableCapabilites();
 		const detectedCapabilities = await Promise.all(
-			capabilities.map(async capability => {
-				try {
-					const result = await this.detect(capability, options);
-					if (result?.isSupported) {
-						return result;
-					}
-				} catch (error) {
-					console.error(error);
-				}
-			}),
+			capabilities.map(capability => this.#tryDetect(capability, options)),
 		);
 		return detectedCapabilities
-			.filter(<T>(res: T | null | undefined): res is T => !!res)
+			.filter((res): res is Result => res?.isSupported!)
 			.map((res, i) => ({
 				capability: capabilities[i],
 				details: res.details,
 			}));
+	}
+
+	async #tryDetect(capability: Capability, options: DetectOptions) {
+		try {
+			return await this.detect(capability, options);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	getUserAcceptableCapabilites() {
