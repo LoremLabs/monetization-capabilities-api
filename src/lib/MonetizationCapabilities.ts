@@ -1,4 +1,5 @@
-import Cache from "./Cache";
+import Cache from "./Cache.js";
+import { ensureValidCapability } from "./UserPreferences.js";
 
 export type Capability = `${string}/${string}`;
 export type Result = { isSupported: boolean; details?: unknown };
@@ -39,6 +40,7 @@ class Capabilities extends Lock {
 	 * @param isUserCapable tests whether user is capable
 	 */
 	define(capability: Capability, isUserCapable: Test): void {
+		ensureValidCapability(capability);
 		this.#capabilities.set(capability, isUserCapable);
 	}
 

@@ -58,11 +58,11 @@ export default class UserPreferences {
 	}
 }
 
-function isValidCapability(capability: Capability) {
+export function isValidCapability(capability: Capability) {
 	return typeof capability === "string" && /^\w+\/(\w+|\*)$/.test(capability);
 }
 
-function ensureValidCapability(capability: Capability) {
+export function ensureValidCapability(capability: Capability) {
 	if (!isValidCapability(capability)) {
 		throw new Error(`Invalid capability format: ${JSON.stringify(capability)}`);
 	}
