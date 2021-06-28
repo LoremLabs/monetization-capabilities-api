@@ -42,6 +42,15 @@ class Capabilities extends Lock {
 		this.#capabilities.set(capability, isUserCapable);
 	}
 
+	undefine(capability: Capability) {
+		if (!this.#capabilities.has(capability)) {
+			throw new Error("Capability not defined.");
+		}
+		const fn = this.#capabilities.get(capability)!;
+		this.#capabilities.delete(capability);
+		return fn;
+	}
+
 	use([name, test]: Plugin): void {
 		this.define(name, test);
 	}
