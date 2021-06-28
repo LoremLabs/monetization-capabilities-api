@@ -4,7 +4,12 @@ import { Capability, Result, Plugin } from "../lib/MonetizationCapabilities.js";
 
 const name: Capability = "webmonetization/*";
 
-function isCapable(timeout: number) {
+interface Options {
+	/** Detection timeout in milliseconds. */
+	timeout: number;
+}
+
+function isCapable({ timeout }: Options) {
 	return new Promise<Result>(resolve => {
 		const wm = (document as MonetizationExtendedDocument).monetization;
 		if (!wm) {
@@ -31,6 +36,7 @@ function isCapable(timeout: number) {
 	});
 }
 
-export default function webmonetization(timeout: number = 0): Plugin {
-	return [name, () => isCapable(timeout)];
+export default function webmon(options: Partial<Options> = {}): Plugin {
+	const timeout = Math.max(options.timeout || 0, 0);
+	return [name, () => isCapable({ timeout })];
 }

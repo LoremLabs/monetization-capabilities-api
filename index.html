@@ -12,7 +12,7 @@
 			import webMonetization from "./build/plugins/webmonetization.js";
 
 			const capabilities = window.monetization.capabilities.acquire();
-			capabilities.use(webMonetization(5000));
+			capabilities.use(webMonetization({ timeout: 5000 }));
 			capabilities.define("ads/*", () => {});
 			capabilities.define("ads/behavioral", () => {});
 
