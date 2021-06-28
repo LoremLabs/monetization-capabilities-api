@@ -4,14 +4,18 @@ export default class UserPreferences {
 	#prefer = new Set<Capability>();
 	#deny = new Set<Capability>();
 
-	prefer(capabilities: Capability[]) {
-		this.#prefer.clear();
-		capabilities.forEach(c => this.#prefer.add(c));
+	setPreferences(capabilities: Capability[]) {
+		this.#prefer = new Set(capabilities.filter(isValidCapability));
 	}
 
-	deny(capabilities: Capability[]) {
-		this.#deny.clear();
-		capabilities.forEach(c => this.#deny.add(c));
+	allow(capability: Capability) {
+		ensureValidCapability(capability);
+		this.#deny.delete(capability);
+	}
+
+	deny(capability: Capability) {
+		ensureValidCapability(capability);
+		this.#deny.add(capability);
 	}
 
 	/**
@@ -50,5 +54,15 @@ export default class UserPreferences {
 
 	get() {
 		return { prefers: [...this.#prefer], denies: [...this.#deny] };
+	}
+}
+
+function isValidCapability(capability: Capability) {
+	return typeof capability === "string" && /^\w+\/(\w+|\*)$/.test(capability);
+}
+
+function ensureValidCapability(capability: Capability) {
+	if (!isValidCapability(capability)) {
+		throw new Error(`Invalid capability format: ${JSON.stringify(capability)}`);
 	}
 }
