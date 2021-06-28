@@ -18,10 +18,9 @@ export default class Monetization {
 	 * Find matches between user preferences, user's capabilities and the
 	 * capabilities defined by site (i.e., site preferences).
 	 */
-	async match(): Promise<Capability[]> {
-		const userPreferences = this.#userPreferences;
-		const sitePreferences = this.#capabilities.list();
-		return [...userPreferences.get().prefers]; // TODO
+	match(): Capability[] {
+		const siteCapabilities = this.#capabilities.list();
+		return siteCapabilities.filter(cap => !this.#userPreferences.denies(cap));
 	}
 
 	clearCache() {
