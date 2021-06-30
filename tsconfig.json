@@ -5,7 +5,6 @@
 		"lib": ["ESNext", "DOM"],
 		"moduleResolution": "Node",
 		"strict": true,
-		"removeComments": true,
-		"rootDir": "src"
+		"removeComments": true
 	}
 }

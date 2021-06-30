@@ -1,16 +1,11 @@
-// @ts-check
-import path from "path";
+import * as path from "path";
 import { defineConfig } from "rollup";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 
 const isDev = !!process.env.ROLLUP_WATCH;
 
-/**
- * @param {`src/${string}`} input
- * @param {string} name
- */
-function getConfig(input, name) {
+function getConfig(input: `src/${string}.ts`, name: string) {
 	const baseDir = path.dirname(path.relative("src", input));
 	const legacyDir = path.join("build", "legacy", baseDir);
 	const modernDir = path.join("build", baseDir);

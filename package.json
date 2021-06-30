@@ -4,8 +4,8 @@
 	"description": "",
 	"browser": "src/index.js",
 	"scripts": {
-		"build": "NODE_ENV=production rollup -c",
-		"dev": "rollup -c -w",
+		"build": "NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript",
+		"dev": "rollup -c rollup.config.ts --configPlugin typescript -w",
 		"lint": "prettier . -c",
 		"lint:fix": "prettier . -w"
 	},
