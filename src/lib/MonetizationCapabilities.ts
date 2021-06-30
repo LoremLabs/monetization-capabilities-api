@@ -29,6 +29,15 @@ class Lock {
 	}
 }
 
+class CapabilityChangeEvent extends Event {
+	constructor(
+		public changeType: "define" | "undefine",
+		public capability: Capability,
+	) {
+		super("change");
+	}
+}
+
 class Capabilities extends Lock {
 	#capabilities;
 	#dispatchEvent;
@@ -48,7 +57,7 @@ class Capabilities extends Lock {
 	define(capability: Capability, isUserCapable: Test): void {
 		ensureValidCapability(capability);
 		this.#capabilities.set(capability, isUserCapable);
-		this.#dispatchEvent(createChangeEvent("define", capability));
+		this.#dispatchEvent(new CapabilityChangeEvent("define", capability));
 	}
 
 	undefine(capability: Capability) {
@@ -57,7 +66,7 @@ class Capabilities extends Lock {
 		}
 		const fn = this.#capabilities.get(capability)!;
 		this.#capabilities.delete(capability);
-		this.#dispatchEvent(createChangeEvent("undefine", capability));
+		this.#dispatchEvent(new CapabilityChangeEvent("undefine", capability));
 		return fn;
 	}
 
@@ -124,9 +133,4 @@ export default class MonetizationCapabilities extends EventTarget {
 	async clearCache() {
 		await this.#cache.clear();
 	}
-}
-
-type ChangeType = "define" | "undefine";
-function createChangeEvent(type: ChangeType, capability: Capability) {
-	return new CustomEvent("change", { detail: { type, capability } });
 }
