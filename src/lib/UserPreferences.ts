@@ -1,6 +1,6 @@
 import { Capability } from "./MonetizationCapabilities.js";
 
-export default class UserPreferences {
+export default class UserPreferences extends EventTarget {
 	#allow = new Set<Capability>();
 	#deny = new Set<Capability>();
 
@@ -8,12 +8,14 @@ export default class UserPreferences {
 		ensureValidCapability(capability);
 		this.#allow.add(capability);
 		this.#deny.delete(capability);
+		this.dispatchEvent(createChangeEvent("allow", capability));
 	}
 
 	deny(capability: Capability) {
 		ensureValidCapability(capability);
 		this.#deny.add(capability);
 		this.#allow.delete(capability);
+		this.dispatchEvent(createChangeEvent("deny", capability));
 	}
 
 	/**
@@ -66,4 +68,9 @@ export function ensureValidCapability(capability: Capability) {
 	if (!isValidCapability(capability)) {
 		throw new Error(`Invalid capability format: ${JSON.stringify(capability)}`);
 	}
+}
+
+type ChangeType = "allow" | "deny";
+function createChangeEvent(type: ChangeType, capability: Capability) {
+	return new CustomEvent("change", { detail: { type, capability } });
 }

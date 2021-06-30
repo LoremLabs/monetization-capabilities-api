@@ -11,6 +11,12 @@
 		<script type="module">
 			import webMonetization from "./build/plugins/webmonetization.js";
 
+			monetization.userPreferences.addEventListener("change", ev => {
+				console.log(`userPreferences:change`, ev.detail);
+			});
+			monetization.capabilities.addEventListener("change", ev => {
+				console.log(`capabilities:change`, ev.detail);
+			});
 			const capabilities = window.monetization.capabilities.acquire();
 			capabilities.use(webMonetization({ timeout: 5000 }));
 			capabilities.define("ads/*", () => {});

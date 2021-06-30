@@ -30,7 +30,13 @@ class Lock {
 }
 
 class Capabilities extends Lock {
-	#capabilities = new Map<Capability, () => ReturnType<Test>>();
+	#capabilities;
+	#dispatchEvent;
+	constructor(dispatchEvent: EventTarget["dispatchEvent"]) {
+		super();
+		this.#capabilities = new Map<Capability, () => ReturnType<Test>>();
+		this.#dispatchEvent = dispatchEvent;
+	}
 
 	/**
 	 * Declare & define a website's capability to monetize by different methods.
@@ -42,6 +48,7 @@ class Capabilities extends Lock {
 	define(capability: Capability, isUserCapable: Test): void {
 		ensureValidCapability(capability);
 		this.#capabilities.set(capability, isUserCapable);
+		this.#dispatchEvent(createChangeEvent("define", capability));
 	}
 
 	undefine(capability: Capability) {
@@ -50,6 +57,7 @@ class Capabilities extends Lock {
 		}
 		const fn = this.#capabilities.get(capability)!;
 		this.#capabilities.delete(capability);
+		this.#dispatchEvent(createChangeEvent("undefine", capability));
 		return fn;
 	}
 
@@ -70,11 +78,13 @@ class Capabilities extends Lock {
 	}
 }
 
-export default class MonetizationCapabilities {
-	#capabilities = new Capabilities();
-	#cache: Cache;
+export default class MonetizationCapabilities extends EventTarget {
+	#capabilities;
+	#cache;
 
 	constructor() {
+		super();
+		this.#capabilities = new Capabilities(this.dispatchEvent.bind(this));
 		this.#cache = new Cache({ enabled: false });
 	}
 
@@ -114,4 +124,9 @@ export default class MonetizationCapabilities {
 	async clearCache() {
 		await this.#cache.clear();
 	}
+}
+
+type ChangeType = "define" | "undefine";
+function createChangeEvent(type: ChangeType, capability: Capability) {
+	return new CustomEvent("change", { detail: { type, capability } });
 }
