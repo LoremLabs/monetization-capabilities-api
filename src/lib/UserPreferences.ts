@@ -26,6 +26,11 @@ export default class UserPreferences extends EventTarget {
 		this.#allow.delete(capability);
 		this.dispatchEvent(new PreferenceChangeEvent("deny", capability));
 	}
+	
+	clear() {
+		this.#allow.clear();
+		this.#deny.clear();
+	}
 
 	/**
 	 * @example assert(matches("foo/*", "foo/*"))
