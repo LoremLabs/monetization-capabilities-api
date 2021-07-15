@@ -41,11 +41,6 @@ export default class UserPreferences extends EventTarget {
 		this.#allowList.delete(capability);
 	}
 
-	clear() {
-		this.#allowList.clear();
-		this.#blockList.clear();
-	}
-
 	update(
 		updateFn: (
 			currentValue: { [k in "allows" | "denies"]: Capability[] },
