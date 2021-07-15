@@ -10,26 +10,26 @@ class PreferenceChangeEvent extends Event {
 }
 
 export default class UserPreferences extends EventTarget {
-	#allow = new Set<Capability>();
-	#deny = new Set<Capability>();
+	#allowList = new Set<Capability>();
+	#blockList = new Set<Capability>();
 
 	allow(capability: Capability) {
 		ensureValidCapability(capability);
-		this.#allow.add(capability);
-		this.#deny.delete(capability);
+		this.#allowList.add(capability);
+		this.#blockList.delete(capability);
 		this.dispatchEvent(new PreferenceChangeEvent("allow", capability));
 	}
 
 	deny(capability: Capability) {
 		ensureValidCapability(capability);
-		this.#deny.add(capability);
-		this.#allow.delete(capability);
+		this.#blockList.add(capability);
+		this.#allowList.delete(capability);
 		this.dispatchEvent(new PreferenceChangeEvent("deny", capability));
 	}
-	
+
 	clear() {
-		this.#allow.clear();
-		this.#deny.clear();
+		this.#allowList.clear();
+		this.#blockList.clear();
 	}
 
 	/**
@@ -64,13 +64,13 @@ export default class UserPreferences extends EventTarget {
 
 	denies(capability: Capability) {
 		return (
-			[...this.#deny].some(cap => this.matches(cap, capability)) &&
-			!this.#allow.has(capability)
+			[...this.#blockList].some(cap => this.matches(cap, capability)) &&
+			!this.#allowList.has(capability)
 		);
 	}
 
 	get() {
-		return { allows: [...this.#allow], denies: [...this.#deny] };
+		return { allows: [...this.#allowList], denies: [...this.#blockList] };
 	}
 }
 
