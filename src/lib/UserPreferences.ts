@@ -20,6 +20,21 @@ class Preferences {
 		public readonly allows: Capability[],
 		public readonly denies: Capability[],
 	) {}
+
+	/**
+	 * Returns the value for Accept-Monetization HTTP header.
+	 * @link {https://github.com/mankins/accept-monetization}
+	 */
+	toAcceptHeader(): string {
+		const allowsPart = this.allows.map(
+			// For 3 values, q = 1, 0.6, 0.3
+			// For 4 values, q = 1, 0.8, 0.5, 0.3
+			// For 5 values, q = 1, 0.8, 0.6, 0.4, 0.2
+			(s, i, { length: k }) => `${s};q=${((k - i) / k).toPrecision(1)}`,
+		);
+		const deniesPart = this.denies.map(s => `${s};q=0`);
+		return allowsPart.concat(deniesPart).join(", ");
+	}
 }
 
 export default class UserPreferences extends EventTarget {
