@@ -47,15 +47,30 @@ export default class UserPreferences extends EventTarget {
 		) => { [k in "allow" | "deny"]?: Capability[] },
 	) {
 		const { allow, deny } = updateFn(this.get()) || {};
+		let hasChanged = false;
 		if (Array.isArray(allow)) {
+			hasChanged = hasChanged || this.#hasChanged(allow, this.#allowList);
 			this.#allowList.clear();
 			allow.forEach(cap => this.#allow(cap));
 		}
 		if (Array.isArray(deny)) {
+			hasChanged = hasChanged || this.#hasChanged(deny, this.#blockList);
 			this.#blockList.clear();
 			deny.forEach(cap => this.#deny(cap));
 		}
-		this.dispatchEvent(new PreferenceUpdateEvent("update"));
+		if (hasChanged) {
+			this.dispatchEvent(new PreferenceUpdateEvent("update"));
+		}
+	}
+
+	#hasChanged(newValues: Capability[], oldValues: Set<Capability>) {
+		if (newValues.length !== oldValues.size) return true;
+		// Set is ordered (in case).
+		let i = 0;
+		for (const val of oldValues) {
+			if (newValues[i++] !== val) return true;
+		}
+		return false;
 	}
 
 	/**
