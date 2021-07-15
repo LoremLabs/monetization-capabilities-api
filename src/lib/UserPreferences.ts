@@ -15,6 +15,13 @@ class PreferenceUpdateEvent extends Event {
 	}
 }
 
+class Preferences {
+	constructor(
+		public readonly allows: Capability[],
+		public readonly denies: Capability[],
+	) {}
+}
+
 export default class UserPreferences extends EventTarget {
 	#allowList = new Set<Capability>();
 	#blockList = new Set<Capability>();
@@ -111,7 +118,7 @@ export default class UserPreferences extends EventTarget {
 	}
 
 	get() {
-		return { allows: [...this.#allowList], denies: [...this.#blockList] };
+		return new Preferences([...this.#allowList], [...this.#blockList]);
 	}
 }
 
