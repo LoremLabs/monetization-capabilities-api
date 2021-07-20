@@ -11,36 +11,36 @@
 		<script type="module">
 			import webMonetization from "./build/plugins/webmonetization.js";
 
-			monetization.userPreferences.addEventListener("change", ev => {
+			monet.userPreferences.addEventListener("change", ev => {
 				console.log(`userPreferences:change`, ev.changeType, ev.capability);
 			});
-			monetization.capabilities.addEventListener("change", ev => {
+			monet.capabilities.addEventListener("change", ev => {
 				console.log(`capabilities:change`, ev.changeType, ev.capability);
 			});
-			const capabilities = window.monetization.capabilities.acquire();
+			const capabilities = monet.capabilities.acquire();
 			capabilities.use(webMonetization({ timeout: 5000 }));
 			capabilities.define("ads/*", () => {});
 			capabilities.define("ads/behavioral", () => {});
 
-			monetization.userPreferences.deny("ads/behavioral");
-			monetization.userPreferences.allow("ads/*");
-			monetization.userPreferences.allow("foo/*");
-			monetization.userPreferences.allow("webmonetization/*");
+			monet.userPreferences.deny("ads/behavioral");
+			monet.userPreferences.allow("ads/*");
+			monet.userPreferences.allow("foo/*");
+			monet.userPreferences.allow("webmonetization/*");
 
-			console.group("monetization.capabilities.list()");
-			console.log(monetization.capabilities.list());
+			console.group("monet.capabilities.list()");
+			console.log(monet.capabilities.list());
 			console.groupEnd();
-			console.group("monetization.userPreferences.get()");
-			console.dir(monetization.userPreferences.get());
+			console.group("monet.userPreferences.get()");
+			console.dir(monet.userPreferences.get());
 			console.groupEnd();
-			monetization.match().then(matches => {
-				console.group("monetization.match()");
+			monet.match().then(matches => {
+				console.group("monet.match()");
 				console.table(matches);
 				console.groupEnd();
 			});
 
 			// (async () => {
-			// 	console.log(await window.monetization.detect("webmonetization/*"));
+			// 	console.log(await monet.detect("webmonetization/*"));
 			// })();
 		</script>
 	</body>
