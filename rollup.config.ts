@@ -10,7 +10,7 @@ function getConfig(input: `src/${string}.ts`, name: string) {
 	const legacyDir = path.join("build", "legacy", baseDir);
 	const modernDir = path.join("build", baseDir);
 
-	const configs = [
+	return [
 		defineConfig({
 			input,
 			output: { dir: modernDir, format: "es", sourcemap: true },
@@ -19,22 +19,15 @@ function getConfig(input: `src/${string}.ts`, name: string) {
 				!isDev && terser({ format: { comments: false } }),
 			],
 		}),
+		defineConfig({
+			input,
+			output: { dir: legacyDir, format: "umd", name },
+			plugins: [
+				typescript({ target: "ES2015" }),
+				!isDev && terser({ format: { comments: false } }),
+			],
+		}),
 	];
-
-	if (!isDev) {
-		configs.push(
-			defineConfig({
-				input,
-				output: { dir: legacyDir, format: "iife", name },
-				plugins: [
-					typescript({ target: "ES2015" }),
-					!isDev && terser({ format: { comments: false } }),
-				],
-			}),
-		);
-	}
-
-	return configs;
 }
 
 export default [
