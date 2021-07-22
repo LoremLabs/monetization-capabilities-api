@@ -2,6 +2,7 @@ import * as path from "path";
 import { defineConfig } from "rollup";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
+import dts from "rollup-plugin-dts";
 
 const isDev = !!process.env.ROLLUP_WATCH;
 
@@ -26,6 +27,11 @@ function getConfig(input: `src/${string}.ts`, name: string) {
 				typescript({ target: "ES2015" }),
 				!isDev && terser({ format: { comments: false } }),
 			],
+		}),
+		defineConfig({
+			input,
+			output: { dir: modernDir, format: "es" },
+			plugins: [dts()],
 		}),
 	];
 }
