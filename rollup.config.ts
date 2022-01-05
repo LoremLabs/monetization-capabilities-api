@@ -1,7 +1,6 @@
 import * as path from "path";
 import { defineConfig } from "rollup";
 import typescript from "@rollup/plugin-typescript";
-import { terser } from "rollup-plugin-terser";
 import dts from "rollup-plugin-dts";
 
 const isDev = !!process.env.ROLLUP_WATCH;
@@ -15,18 +14,12 @@ function getConfig(input: `src/${string}.ts`, name: string) {
 		defineConfig({
 			input,
 			output: { dir: modernDir, format: "es", sourcemap: true },
-			plugins: [
-				typescript({ target: "ES2020", sourceMap: true }),
-				!isDev && terser({ format: { comments: false } }),
-			],
+			plugins: [typescript({ target: "ES2020", sourceMap: true })],
 		}),
 		defineConfig({
 			input,
 			output: { dir: legacyDir, format: "umd", name, sourcemap: true },
-			plugins: [
-				typescript({ target: "ES2015", sourceMap: true }),
-				!isDev && terser({ format: { comments: false } }),
-			],
+			plugins: [typescript({ target: "ES2015", sourceMap: true })],
 		}),
 		defineConfig({
 			input,
