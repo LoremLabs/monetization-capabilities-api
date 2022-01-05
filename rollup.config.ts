@@ -22,9 +22,9 @@ function getConfig(input: `src/${string}.ts`, name: string) {
 		}),
 		defineConfig({
 			input,
-			output: { dir: legacyDir, format: "umd", name },
+			output: { dir: legacyDir, format: "umd", name, sourcemap: true },
 			plugins: [
-				typescript({ target: "ES2015" }),
+				typescript({ target: "ES2015", sourceMap: true }),
 				!isDev && terser({ format: { comments: false } }),
 			],
 		}),
