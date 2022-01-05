@@ -112,10 +112,10 @@ export default class MonetizationCapabilities extends EventTarget {
 
 	async detect(capability: Capability, options: DetectOptions) {
 		const { bypassCache = false } = options;
-		if (!this.#capabilities.has(capability)) {
+		const detectCapability = this.#capabilities.get(capability)!;
+		if (!detectCapability || typeof detectCapability !== "function") {
 			throw new Error(`Unrecognized capability: ${capability}`);
 		}
-		const detectCapability = this.#capabilities.get(capability)!;
 
 		if (bypassCache) {
 			return await detectCapability();
