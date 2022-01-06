@@ -1,6 +1,6 @@
 {
 	"name": "@loremlabs/monetization-capability-api",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"private": false,
 	"description": "",
 	"browser": "build/index.js",
