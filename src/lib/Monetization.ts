@@ -27,12 +27,14 @@ export default class Monetization {
 		const detectedCapabilities = await Promise.all(
 			capabilities.map(capability => this.#tryDetect(capability, options)),
 		);
-		return detectedCapabilities
-			.filter((res): res is Result => res?.isSupported!)
-			.map((res, i) => ({
-				capability: capabilities[i],
-				details: res.details,
-			}));
+		const result = [];
+		for (let i = 0; i < capabilities.length; i++) {
+			const res = detectedCapabilities[i];
+			if (res && res.isSupported) {
+				result.push({ capability: capabilities[i], details: res.details });
+			}
+		}
+		return result;
 	}
 
 	async #tryDetect(capability: Capability, options: DetectOptions) {
