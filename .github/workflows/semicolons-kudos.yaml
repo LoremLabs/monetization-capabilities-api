@@ -8,6 +8,7 @@ on:
 jobs:
   kudos:
     name: Semicolons Kudos
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,3 +19,5 @@ jobs:
           generate-nomerges: true
           generate-validemails: true
           generate-limitdepth: 2
+          generate-fromrepo: true
+          analyze-repo: true
